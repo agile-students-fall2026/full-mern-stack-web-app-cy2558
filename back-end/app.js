@@ -11,6 +11,7 @@ app.use(cors()) // allow cross-origin resource sharing
 // use express's builtin body-parser middleware to parse any data included in a request
 app.use(express.json()) // decode JSON-formatted incoming POST data
 app.use(express.urlencoded({ extended: true })) // decode url-encoded incoming POST data
+app.use(express.static(`${__dirname}/public`)) // serve static files, e.g. the About Us photo
 
 // connect to database
 mongoose
@@ -76,6 +77,24 @@ app.post('/messages/save', async (req, res) => {
       status: 'failed to save the message to the database',
     })
   }
+})
+
+// a route to handle fetching the About Us page content
+app.get('/about', (req, res) => {
+  res.json({
+    name: 'Chenxin Yan',
+    paragraphs: [
+      ["Hi! I'm Chenxin Yan, but most people call me Cyan."],
+      ["I'm a Computer Science and Philosophy student at NYU."],
+      [
+        'I love building open-source software, and I currently work at ',
+        { text: 'General Translation', url: 'https://generaltranslation.com' },
+        '.',
+      ],
+    ],
+    imageUrl: `${req.protocol}://${req.get('host')}/me.jpg`,
+    status: 'all good',
+  })
 })
 
 // export the express app we created to make it available to other modules
